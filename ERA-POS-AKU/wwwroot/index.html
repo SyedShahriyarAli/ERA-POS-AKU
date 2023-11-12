@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>ERA POS AKU</title>
+    <base href="/" />
+
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/material3-base.css">
+    <link href="css/app.css" rel="stylesheet" />
+</head>
+
+<body>
+
+    <div class="status-bar-safe-area"></div>
+
+    <div id="app">Loading...</div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="_framework/blazor.webview.js" autostart="false"></script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+
+    <script>
+        function registerShortcuts() {
+            document.addEventListener('keydown', handleKeyDown);
+        }
+
+        function handleKeyDown(e) {
+            var drpCustomer = document.getElementById('drpCustomer');
+            var txtAmount = document.getElementById('txtAmount');
+            switch (e.key) {
+                case 'F1':
+                    focusCardInput();
+                    break;
+                case 'F2':
+                    focusBarcodeInput();
+                    break;
+                case 'F3':
+                    e.preventDefault();
+                    if (txtAmount.firstElementChild.value != '0')
+                        addPayment();
+                    else
+                        checkout();
+                    break;
+            }
+        }
+
+        function focusCardInput() {
+            document.getElementById('cardInput').focus();
+        }
+
+        function focusBarcodeInput() {
+            document.getElementById('barcodeInput').focus();
+        }
+
+        function addPayment() {
+            GLOBAL.DotNetReference.invokeMethodAsync('AddPaymentFromShortCut');
+        }
+
+        function checkout() {
+            GLOBAL.DotNetReference.invokeMethodAsync('Checkout');
+        }
+
+        var GLOBAL = {};
+        GLOBAL.DotNetReference = null;
+        GLOBAL.SetDotnetReference = function (pDotNetReference) {
+            GLOBAL.DotNetReference = pDotNetReference;
+        };
+    </script>
+
+</body>
+
+</html>

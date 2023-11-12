@@ -1,0 +1,49 @@
+﻿@using ERA_POS_AKU.Data
+@inject GlobalService GlobalService
+@inject DialogService DialogService
+
+<RadzenRow class="rz-mb-4">
+    <RadzenColumn Size="12">
+        <input type="text" placeholder="Search" class="rz-textbox rz-border-radius-6" @bind-value="@search" @bind-value:event="oninput" Style="width: 100%;" />
+    </RadzenColumn>
+</RadzenRow>
+<RadzenRow>
+    <RadzenColumn Size="12">
+        <RadzenDataGrid TItem="Product" Data="@products?.Where(x => x.Barcode.ToLower().Contains(search.ToLower()) || x.Name.ToLower().Contains(search.ToLower())).ToList()" AllowFiltering="true" AllowSorting="true" AllowPaging="true" PageSize="10" PagerAlwaysVisible="true"
+                        ShowPagingSummary="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowColumnResize="true">
+            <Columns>
+                <RadzenDataGridColumn TItem="Product" Property="Barcode" Title="Code"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Product" Property="Name" Title="Name"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Product" Property="Price" Title="Price" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Product" Property="Tax" Title="Tax %" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Product" Property="Stock" Title="Stock" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Product" Width="70px" TextAlign="TextAlign.Center" Sortable="false" Filterable="false">
+                    <Template Context="data">
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Shade="Shade.Light" Variant="Variant.Flat" Click="@(args => AddToCart(data.Barcode))" />
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenColumn>
+</RadzenRow>
+
+@code {
+    List<Product> products = new();
+    string search = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await GlobalService.GetProducts();
+    }
+
+    void AddToCart(string barcode)
+    {
+        DialogService.Close(barcode);
+    }
+
+    void CancelButtonClick()
+    {
+        DialogService.Close(null);
+    }
+}
+ 
