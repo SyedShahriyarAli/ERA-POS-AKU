@@ -29,24 +29,45 @@
     <script>
         function registerShortcuts() {
             document.addEventListener('keydown', handleKeyDown);
+            focusBarcodeInput();
         }
 
         function handleKeyDown(e) {
-            var drpCustomer = document.getElementById('drpCustomer');
-            var txtAmount = document.getElementById('txtAmount');
             switch (e.key) {
                 case 'F1':
-                    focusCardInput();
+                    if (document.getElementById('btnPayment') != null)
+                        togglePayment();
+                    else
+                        checkout();
                     break;
                 case 'F2':
-                    focusBarcodeInput();
+                    if (document.getElementById('btnPayment') != null)
+                        focusBarcodeInput();
+                    else
+                        addCashless();
                     break;
                 case 'F3':
                     e.preventDefault();
-                    if (txtAmount.firstElementChild.value != '0')
-                        addPayment();
+                    if (document.getElementById('drpCustomer') != null)
+                        focusCardInput();
                     else
-                        checkout();
+                        addPrepay();
+                    break;
+                case 'F4':
+                    e.preventDefault();
+                    addCash();
+                    break;
+                case 'F5':
+                    e.preventDefault();
+                    addCard();
+                    break;
+                case 'F6':
+                    e.preventDefault();
+                    GLOBAL.DotNetReference.invokeMethodAsync('VoidSale');
+                    break;
+                case 'F7':
+                    e.preventDefault();
+                    GLOBAL.DotNetReference.invokeMethodAsync('ParkSale');
                     break;
             }
         }
@@ -59,12 +80,33 @@
             document.getElementById('barcodeInput').focus();
         }
 
-        function addPayment() {
-            GLOBAL.DotNetReference.invokeMethodAsync('AddPaymentFromShortCut');
+        function focusAmountInput() {
+            var txtAmount = document.getElementById('txtAmount').firstElementChild; 
+            txtAmount.focus();
+        }
+
+        function addCashless() {
+            GLOBAL.DotNetReference.invokeMethodAsync('AddCashless');
+        }
+
+        function addPrepay() {
+            GLOBAL.DotNetReference.invokeMethodAsync('AddPrepay');
+        }
+
+        function addCash() {
+            GLOBAL.DotNetReference.invokeMethodAsync('AddCash');
+        }
+
+        function addCard() {
+            GLOBAL.DotNetReference.invokeMethodAsync('AddCard');
         }
 
         function checkout() {
             GLOBAL.DotNetReference.invokeMethodAsync('Checkout');
+        }
+
+        function togglePayment() {
+            GLOBAL.DotNetReference.invokeMethodAsync('TogglePaymentPanel');
         }
 
         var GLOBAL = {};

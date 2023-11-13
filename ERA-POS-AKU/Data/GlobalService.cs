@@ -31,13 +31,13 @@ public class GlobalService
         List<Customer> customers = new List<Customer>
         {
             new Customer { Name = "John Doe", Identity = "123456789", Type = CustomerType.Employee },
-            new Customer { Name = "Jane Smith", Identity = "213456789", Type = CustomerType.Student },
+            new Customer { Name = "Jane Smith", Identity = "213456789", Type = CustomerType.Employee },
             new Customer { Name = "Bob Johnson", Identity = "132456789", Type = CustomerType.PrePay },
             new Customer { Name = "Alice Williams", Identity = "124356789", Type = CustomerType.Employee },
-            new Customer { Name = "Charlie Brown", Identity = "123546789", Type = CustomerType.Student },
+            new Customer { Name = "Charlie Brown", Identity = "123546789", Type = CustomerType.PrePay },
             new Customer { Name = "Eva Davis", Identity = "123465789", Type = CustomerType.PrePay },
             new Customer { Name = "Frank Miller", Identity = "123457689", Type = CustomerType.Employee },
-            new Customer { Name = "Grace Wilson", Identity = "123456879", Type = CustomerType.Student },
+            new Customer { Name = "Grace Wilson", Identity = "123456879", Type = CustomerType.Employee },
             new Customer { Name = "David Lee", Identity = "123456798", Type = CustomerType.PrePay },
             new Customer { Name = "Sophia Brown", Identity = "213546789", Type = CustomerType.Employee }
         };
