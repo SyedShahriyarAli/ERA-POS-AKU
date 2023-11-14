@@ -1,0 +1,24 @@
+﻿@inject DialogService DialogService
+
+<RadzenTemplateForm TItem="double" Data="@amount" Submit="@SubmitPayment">
+    <RadzenStack>
+        <RadzenRow>
+            <RadzenColumn Size="12">
+                <RadzenNumeric placeholder="0.00" @bind-value="@amount" style="width:100%" TValue="double" Min="0" />
+            </RadzenColumn>
+        </RadzenRow>
+        <RadzenRow JustifyContent="JustifyContent.End">
+            <RadzenButton Icon="key" Text="Open Register" ButtonStyle="ButtonStyle.Primary" Variant="Variant.Flat" ButtonType="ButtonType.Submit"></RadzenButton>
+        </RadzenRow>
+    </RadzenStack>
+</RadzenTemplateForm>
+
+@code {
+    [Parameter]
+    public double amount { get; set; }
+
+    void SubmitPayment()
+    {
+        DialogService.Close(amount);
+    }
+}

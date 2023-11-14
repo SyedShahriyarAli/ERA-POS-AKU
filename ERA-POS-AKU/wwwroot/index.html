@@ -41,24 +41,34 @@
                         GLOBAL.DotNetReference.invokeMethodAsync('Checkout');
                     break;
                 case 'F2':
-                    if (document.getElementById('btnPayment') != null)
-                        focusTxtBarcode();
+                    if (document.getElementById('btnPayment') != null) {
+                        if (document.getElementsByClassName('selected')[0]) {
+                            document.getElementsByClassName('selected')[0].childNodes[2].childNodes[9].childNodes[2].childNodes[9].childNodes[2].childNodes[2].focus();
+                            document.getElementsByClassName('selected')[0].childNodes[2].childNodes[9].childNodes[2].childNodes[9].childNodes[2].childNodes[2].select();
+                        }
+                    }
                     else
                         GLOBAL.DotNetReference.invokeMethodAsync('AddCashless');
                     break;
                 case 'F3':
                     e.preventDefault();
                     if (document.getElementById('drpCustomer') != null)
-                        document.getElementById('cardInput').focus();
+                        GLOBAL.DotNetReference.invokeMethodAsync('RemoveItem');
                     else
                         GLOBAL.DotNetReference.invokeMethodAsync('AddPrepay');
                     break;
                 case 'F4':
-                    GLOBAL.DotNetReference.invokeMethodAsync('AddCash');
+                    if (document.getElementById('btnPayment') != null)
+                        focusTxtBarcode();
+                    else
+                        GLOBAL.DotNetReference.invokeMethodAsync('AddCash');
                     break;
                 case 'F5':
                     e.preventDefault();
-                    GLOBAL.DotNetReference.invokeMethodAsync('AddCard');
+                    if (document.getElementById('btnPayment') != null)
+                        document.getElementById('cardInput').focus();
+                    else
+                        GLOBAL.DotNetReference.invokeMethodAsync('AddCard');
                     break;
                 case 'F6':
                     e.preventDefault();
@@ -68,6 +78,15 @@
                     e.preventDefault();
                     GLOBAL.DotNetReference.invokeMethodAsync('ParkSale');
                     break;
+                case 'F8':
+                    GLOBAL.DotNetReference.invokeMethodAsync('OpenReturnSale');
+                    break;
+                case 'ArrowDown':
+                    GLOBAL.DotNetReference.invokeMethodAsync('SelectNext');
+                    break;
+                case 'ArrowUp':
+                    GLOBAL.DotNetReference.invokeMethodAsync('SelectPrevious');
+                    break;
             }
         }
 
@@ -76,7 +95,7 @@
         }
 
         function focusTxtAmount() {
-            var txtAmount = document.getElementById('txtAmount').firstElementChild; 
+            var txtAmount = document.getElementById('txtAmount').firstElementChild;
             txtAmount.focus();
         }
 

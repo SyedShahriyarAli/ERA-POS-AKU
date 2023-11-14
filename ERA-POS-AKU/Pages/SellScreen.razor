@@ -51,9 +51,13 @@
         font-size: 1.1em !important;
     }
 
-    .rz-datalist-data{
+    .rz-datalist-data {
         padding-top: 0.1rem;
         padding-bottom: 0.1rem;
+    }
+
+    .selected {
+        background-color: var(--rz-primary-light) !important;
     }
 </style>
 
@@ -61,11 +65,15 @@
     <RadzenCard Variant="Variant.Flat" class="header row">
         <RadzenRow JustifyContent="JustifyContent.Start" AlignItems="AlignItems.Center" Gap="0">
             <RadzenColumn Size="5">
-                <RadzenText TextStyle="TextStyle.DisplayH6" Style="margin-left: 16px; margin-bottom: 0 !important">ERA POS</RadzenText>
+                <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem">
+                    <RadzenText TextStyle="TextStyle.DisplayH6" Style="margin-left: 16px; margin-bottom: 0 !important">ERA POS</RadzenText>
+                    <RadzenText TextStyle="TextStyle.DisplayH6" Style="margin-bottom: 0 !important" Text="(Station # 01)" />
+                </RadzenStack>
             </RadzenColumn>
             <RadzenColumn Size="7">
-                <RadzenStack AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+                <RadzenStack AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="1rem">
                     <RadzenText TextStyle="TextStyle.Subtitle1" Style="margin-left: 16px; margin-bottom: 0 !important;">Logged in as <strong>Cashier</strong>!</RadzenText>
+                    <RadzenBadge Shade="Shade.Dark" BadgeStyle="BadgeStyle.Success" Text="Online" class="d-flex align-items-center" />
                 </RadzenStack>
             </RadzenColumn>
         </RadzenRow>
@@ -79,11 +87,11 @@
                         <RadzenColumn Size="12">
                             <RadzenRow class="rz-mx-4 rz-my-0">
                                 <RadzenColumn Size="10">
-                                    <input placeholder="Scan Barcode (F2)" @bind-value="@search" @bind-value:event="oninput" class="rz-textbox rz-border-radius-6" autocomplete="false" style="width:100%" @onkeydown="SearchBarcode" @ref="barcodeInput" id="barcodeInput" />
+                                    <input placeholder="Scan Barcode (F4)" @bind-value="@search" @bind-value:event="oninput" class="rz-textbox rz-border-radius-6" autocomplete="false" style="width:100%" @onkeydown="SearchBarcode" @ref="barcodeInput" id="barcodeInput" disabled="@returnMode" />
                                 </RadzenColumn>
                                 <RadzenColumn Size="2">
                                     <RadzenStack JustifyContent="JustifyContent.Stretch">
-                                        <RadzenButton Icon="list" Text="Lookup" ButtonStyle="ButtonStyle.Primary" Shade="Shade.Light" Variant="Variant.Filled" Click="@ViewProducts" />
+                                        <RadzenButton Icon="list" Text="Lookup" ButtonStyle="ButtonStyle.Primary" Shade="Shade.Light" Variant="Variant.Filled" Click="@ViewProducts" Disabled="@returnMode" />
                                     </RadzenStack>
                                 </RadzenColumn>
                             </RadzenRow>
@@ -116,45 +124,48 @@
                     </RadzenRow>
 
                     <RadzenRow class="row main">
-                        <RadzenColumn Size="12">
-                            <RadzenDataList @ref="cart" AllowVirtualization="true" Style="max-height: 550px; overflow:auto;"
-                                            WrapItems="false" AllowPaging="false" Data="@cartItems" TItem="CartItem" PageSize="5" 
-                                            PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
-                                <Template Context="item">
-                                    <RadzenCard Style="width: 100%; padding: 0;">
-                                        <RadzenRow Gap="0" AlignItems="AlignItems.Center" class="rz-p-1">
-                                            <RadzenColumn Size="12" SizeLG="3" Class="rz-px-4">
-                                                <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H6" class="rz-mb-0">@(item.Product.Name)</RadzenText>
-                                                </RadzenColumn>
-                                                <RadzenColumn Size="12" SizeLG="8">
-                                                    <RadzenRow Gap="0" AlignItems="AlignItems.Center">
-                                                        <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
-                                                            <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">@(item.Price.ToString("#,##0.#0"))</RadzenText>
+                        <RadzenColumn Size="12" Style="height: 100%">
+                            <RadzenStack Style="max-height: 500px; overflow: auto;" Gap="0.2rem" class="rz-pb-1">
+                                @foreach (var item in cartItems)
+                                {
+                                    <RadzenRow>
+                                        <RadzenColumn Size="12" class="rz-px-4">
+                                            <RadzenCard Style="width: 100%; padding: 0;" Variant="Variant.Filled" class="@(cartItems.IndexOf(item) == selectedIndex ? "selected" : "")">
+                                                <RadzenRow Gap="0" AlignItems="AlignItems.Center" class="rz-p-1">
+                                                    <RadzenColumn Size="12" SizeLG="3" Class="rz-px-4">
+                                                        <RadzenText TextStyle="TextStyle.H6" TagName="TagName.H6" class="rz-mb-0">@(item.Product.Name)</RadzenText>
                                                         </RadzenColumn>
-                                                        <RadzenColumn Size="12" SizeMD="6" SizeLG="2">
-                                                            <RadzenNumeric @bind-Value="@item.Quantity" Min="1" Max="999" TextAlign="TextAlign.Center" />
-                                                        </RadzenColumn>
-                                                        <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
-                                                            <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">@(item.Product.Tax)</RadzenText>
-                                                        </RadzenColumn>
-                                                        <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
-                                                            <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">@(item.Total.ToString("#,##0.#0"))</RadzenText>
-                                                        </RadzenColumn>
-                                                        <RadzenColumn Size="12" SizeMD="6" SizeLG="1" Class="rz-text-align-start rz-text-align-lg-end">
-                                                            @if (item.Product.Subsidized && selectedCustomer?.Type == CustomerType.Employee)
-                                                        {
-                                                            <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Shade="Shade.Lighter" class="price-badge" Text="Subsidized" />
-                                                        }
+                                                        <RadzenColumn Size="12" SizeLG="8">
+                                                            <RadzenRow Gap="0" AlignItems="AlignItems.Center">
+                                                                <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
+                                                                    <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">@(item.Price.ToString("#,##0.#0"))</RadzenText>
+                                                                </RadzenColumn>
+                                                                <RadzenColumn Size="12" SizeMD="6" SizeLG="2">
+                                                                    <RadzenNumeric @bind-Value="@item.Quantity" Min="1" Max="999" TextAlign="TextAlign.Center" Disabled="@returnMode" TValue="int" Change="@(args => QtyChanged(args))" />
+                                                                </RadzenColumn>
+                                                                <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
+                                                                    <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">@(item.Product.Tax)</RadzenText>
+                                                                </RadzenColumn>
+                                                                <RadzenColumn Size="12" SizeMD="6" SizeLG="3">
+                                                                    <RadzenText TextStyle="TextStyle.Body2" TextAlign="TextAlign.Center">@(item.Total.ToString("#,##0.#0"))</RadzenText>
+                                                                </RadzenColumn>
+                                                                <RadzenColumn Size="12" SizeMD="6" SizeLG="1" Class="rz-text-align-start rz-text-align-lg-end">
+                                                                    @if (item.Product.Subsidized && selectedCustomer?.Type == CustomerType.Employee)
+                                                                {
+                                                                    <RadzenBadge BadgeStyle="BadgeStyle.Secondary" Shade="Shade.Lighter" class="price-badge" Text="Subsidized" />
+                                                                }
+                                                            </RadzenColumn>
+                                                        </RadzenRow>
+                                                    </RadzenColumn>
+                                                    <RadzenColumn Size="12" SizeLG="1" Class="rz-px-4">
+                                                        <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" Style="width: 100%" Click="@(args => RemoveItem(item))" Disabled="@returnMode" />
                                                     </RadzenColumn>
                                                 </RadzenRow>
-                                            </RadzenColumn>
-                                            <RadzenColumn Size="12" SizeLG="1" Class="rz-px-4">
-                                                <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" Style="width: 100%" Click="@(args => RemoveItem(item))" />
-                                            </RadzenColumn>
-                                        </RadzenRow>
-                                    </RadzenCard>
-                                </Template>
-                            </RadzenDataList>
+                                            </RadzenCard>
+                                        </RadzenColumn>
+                                    </RadzenRow>
+                                }
+                            </RadzenStack>
                         </RadzenColumn>
                     </RadzenRow>
 
@@ -189,13 +200,13 @@
                     @if (!paymentsVisible)
                     {
                         <RadzenHeading Size="H3" Text="Transaction Details" />
-                        
+
                         <RadzenRow AlignItems="AlignItems.Center">
                             <RadzenColumn Size="6">
                                 <RadzenText>Scan Card</RadzenText>
                             </RadzenColumn>
                             <RadzenColumn Size="6">
-                                <input placeholder="Scan Card (F3)" @bind-value="@cardNo" @bind-value:event="oninput" class="rz-textbox rz-border-radius-6" autocomplete="false" style="width:100%" @onkeydown="SearchCustomer" @ref="cardInput" id="cardInput" disabled="@(cartItems.Count > 0 && selectedCustomer != null)" />
+                                <input placeholder="Scan Card (F5)" @bind-value="@cardNo" @bind-value:event="oninput" class="rz-textbox rz-border-radius-6" autocomplete="false" style="width:100%" @onkeydown="SearchCustomer" @ref="cardInput" id="cardInput" disabled="@(cartItems.Count > 0 && selectedCustomer != null)" />
                             </RadzenColumn>
                         </RadzenRow>
 
@@ -208,7 +219,7 @@
                             </RadzenColumn>
                         </RadzenRow>
 
-                         <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenRow AlignItems="AlignItems.Center">
                             <RadzenColumn Size="6">
                                 <RadzenText>Balance</RadzenText>
                             </RadzenColumn>
@@ -217,7 +228,7 @@
                             </RadzenColumn>
                         </RadzenRow>
 
-                        <RadzenHeading Size="H3" Text="Summary" class="rz-mt-3"/>
+                        <RadzenHeading Size="H3" Text="Summary" class="rz-mt-3" />
 
                         <RadzenRow AlignItems="AlignItems.Center">
                             <RadzenColumn Size="6">
@@ -252,10 +263,10 @@
 
                         <RadzenRow AlignItems="AlignItems.Center">
                             <RadzenColumn Size="6">
-                                <RadzenText>Amount</RadzenText>
+                                <RadzenText>Balance</RadzenText>
                             </RadzenColumn>
                             <RadzenColumn Size="6">
-                                <RadzenNumeric @bind-Value="@paymentAmout" Style="width: 100%" TextAlign="TextAlign.Center" id="txtAmount" />
+                                <RadzenText TextAlign="TextAlign.End">@balance.ToString("#,##0.#0")</RadzenText>
                             </RadzenColumn>
                         </RadzenRow>
 
@@ -308,7 +319,7 @@
                                 }
                                 else
                                 {
-                                    <RadzenButton Text="Payment (F1)" Icon="payments" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Shade="Shade.Dark" Disabled="@(netAmount == 0)" Click="@TogglePaymentPanel" id="btnPayment" Style="width: 100%" />
+                                    <RadzenButton Text="Total (F1)" Icon="payments" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Shade="Shade.Dark" Disabled="@(netAmount == 0)" Click="@TogglePaymentPanel" id="btnPayment" Style="width: 100%" />
                                 }
                             </RadzenStack>
                         </RadzenColumn>
@@ -319,7 +330,7 @@
                         <RadzenRow>
                             <RadzenColumn Size="12">
                                 <RadzenStack>
-                                    <RadzenButton Text="Checkout (F1)" Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Shade="Shade.Dark" Disabled="@(balance > 0 || netAmount == 0)" Click="@Checkout" Style="width: 100%" id="btnCheckout" />
+                                    <RadzenButton Text="Checkout (F1)" Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Shade="Shade.Dark" Disabled="@(balance != 0 || netAmount == 0)" Click="@Checkout" Style="width: 100%" id="btnCheckout" />
                                 </RadzenStack>
                             </RadzenColumn>
                         </RadzenRow>
@@ -331,7 +342,7 @@
 
     <RadzenCard Variant="Variant.Flat" class="footer row">
         <RadzenRow>
-            <RadzenColumn Size="11">
+            <RadzenColumn Size="9">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start">
                     @if (!registerOpen)
                     {
@@ -341,14 +352,18 @@
                     {
                         <RadzenButton Icon="close" Text="Close Register" ButtonStyle="ButtonStyle.Danger" Shade="Shade.Light" Variant="Variant.Filled" Click="@CloseRegister" />
                     }
-                    <RadzenButton Icon="schedule" Text="Parked Sales" ButtonStyle="ButtonStyle.Warning" Shade="Shade.Light" Variant="Variant.Filled" />
-                    <RadzenButton Icon="print" Text="Print Last Receipt" ButtonStyle="ButtonStyle.Info" Shade="Shade.Light" Variant="Variant.Filled" />
+                    <RadzenButton Icon="schedule" Text="Parked Sales" ButtonStyle="ButtonStyle.Primary" Shade="Shade.Light" Variant="Variant.Filled" />
+                    <RadzenButton Icon="keyboard_return" Text="Sale Return" ButtonStyle="ButtonStyle.Primary" Shade="Shade.Light" Variant="Variant.Filled" Click="@OpenReturnSale" />
+                    <RadzenButton Icon="print" Text="Print Last Receipt" ButtonStyle="ButtonStyle.Primary" Shade="Shade.Light" Variant="Variant.Filled" />
                     <RadzenButton Icon="print" Text="Print Last Z-Read" ButtonStyle="ButtonStyle.Primary" Shade="Shade.Light" Variant="Variant.Filled" />
                     <RadzenButton Icon="refresh" Text="Sync Products" ButtonStyle="ButtonStyle.Success" Shade="Shade.Light" Variant="Variant.Filled" />
                 </RadzenStack>
             </RadzenColumn>
-            <RadzenColumn Size="1">
-                <RadzenButton Text="Logout" ButtonStyle="ButtonStyle.Danger" Shade="Shade.Light" Variant="Variant.Filled" Icon="logout" Style="width:100%" Click="@(args => NavigationManager.NavigateTo("/login"))" />
+            <RadzenColumn Size="3">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
+                    <RadzenText>@DateTime.Now.ToString("dd-MMM-yy hh:mm tt")</RadzenText>
+                    <RadzenButton Text="Logout" ButtonStyle="ButtonStyle.Danger" Shade="Shade.Light" Variant="Variant.Filled" Icon="logout" Click="@(args => NavigationManager.NavigateTo("/login"))" />
+                </RadzenStack>
             </RadzenColumn>
         </RadzenRow>
 
@@ -361,7 +376,6 @@
     List<Customer> customers = new();
     List<CartItem> cartItems = new();
     List<Payment> payments = new();
-    RadzenDataList<CartItem> cart;
     RadzenDataGrid<Payment> paymentsGrid;
 
     Customer? selectedCustomer;
@@ -375,6 +389,7 @@
     double paid = 0;
     double balance = 0;
     double paymentAmout = 0;
+    int selectedIndex = 0;
     bool paymentsVisible = false;
 
     private ElementReference barcodeInput;
@@ -398,6 +413,11 @@
         {
             AddToCart(response.ToString());
         }
+    }
+
+    void QtyChanged(int value)
+    {
+        Calculate();
     }
 
     void SearchBarcode(KeyboardEventArgs e)
@@ -444,7 +464,7 @@
             {
                 product.Tax = 0;
                 price = product.SubsidizedPrice;
-                total = price;
+                total = price * qty;
             }
             else
             {
@@ -452,7 +472,7 @@
                 total = (price + (price * product.Tax / 100)) * qty;
             }
             cartItems.Add(new CartItem() { Product = product, Price = price, Quantity = qty, Total = total });
-            cart.Reload();
+            InvokeAsync(StateHasChanged);
             Calculate();
         }
         else
@@ -465,7 +485,6 @@
     void RemoveItem(CartItem item)
     {
         cartItems.Remove(item);
-        cart.Reload();
         Calculate();
     }
 
@@ -491,13 +510,13 @@
     async Task ResetScreen()
     {
         cartItems.Clear();
-        await cart.Reload();
         search = "";
         selectedCustomer = null;
         payments.Clear();
         paymentsGrid?.Reload();
         paid = 0;
         paymentsVisible = false;
+        returnMode = false;
         Calculate();
 
         await InvokeAsync(StateHasChanged);
@@ -516,16 +535,19 @@
 
     void AddPayment(string method)
     {
-        if (paymentAmout > 0 && balance > 0)
+        if (paymentsVisible)
         {
-            payments.Add(new Payment() { Method = method, Amount = paymentAmout });
+            if (paymentAmout != 0 && balance != 0)
+            {
+                payments.Add(new Payment() { Method = method, Amount = paymentAmout });
 
-            paid += paymentAmout;
-            balance = Math.Round(netAmount - paid, 2);
-            paymentAmout = balance;
+                paid += paymentAmout;
+                balance = Math.Round(netAmount - paid, 2);
+                paymentAmout = balance;
 
-            paymentsGrid.Reload();
-            InvokeAsync(StateHasChanged);
+                paymentsGrid.Reload();
+                InvokeAsync(StateHasChanged);
+            }
         }
     }
 
@@ -578,7 +600,6 @@
 
         paymentsVisible = true;
         await InvokeAsync(StateHasChanged);
-        await JSRuntime.InvokeVoidAsync("focusTxtAmount");
     }
 
     [JSInvokableAttribute("AddCashless")]
@@ -586,7 +607,7 @@
     {
         if (selectedCustomer?.Type == CustomerType.Employee)
         {
-            if(selectedCustomer.Balance < netAmount)
+            if (selectedCustomer.Balance < netAmount)
             {
                 DialogService.Alert($"Selected customer has remaining balance of Rs. {selectedCustomer.Balance.ToString("#,##0.#0")}", "Insufficient Balance!", new AlertOptions() { OkButtonText = "OK" });
                 return;
@@ -597,33 +618,52 @@
     }
 
     [JSInvokableAttribute("AddPrepay")]
-    public void AddPrepay()
+    public async Task AddPrepay()
     {
         if (selectedCustomer?.Type == CustomerType.PrePay)
         {
-            AddPayment("Prepaid Card");
+            await PaymentModal("Prepaid Card");
         }
     }
 
     [JSInvokableAttribute("AddCash")]
-    public void AddCash()
+    public async Task AddCash()
     {
         if (selectedCustomer?.Type != CustomerType.Employee && selectedCustomer?.Type != CustomerType.PrePay)
         {
-            AddPayment("Cash");
+            await PaymentModal("Cash");
         }
     }
 
     [JSInvokableAttribute("AddCard")]
-    public void AddCard()
+    public async Task AddCard()
     {
         if (selectedCustomer?.Type != CustomerType.Employee && selectedCustomer?.Type != CustomerType.PrePay)
         {
-            AddPayment("Card");
+            await PaymentModal("Card");
         }
     }
 
-    double floatValue = 0;
+    async Task PaymentModal(string method)
+    {
+        if (paymentsVisible && balance != 0)
+        {
+            var response = await DialogService.OpenAsync<AddPayment>(method, new Dictionary<string, object>() { { "amount", paymentAmout } });
+
+            if (response != null)
+            {
+                double amount = (double)response;
+                payments.Add(new Payment() { Method = method, Amount = amount });
+
+                paid += amount;
+                balance = Math.Round(netAmount - paid, 2);
+                paymentAmout = balance;
+
+                await paymentsGrid.Reload();
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+    }
 
     async Task OpenRegister()
     {
@@ -645,5 +685,61 @@
             NotificationService.Notify(NotificationSeverity.Success, "Success", "Register Closed!");
             registerOpen = false;
         }
+    }
+
+    bool returnMode = false;
+
+    [JSInvokable("OpenReturnSale")]
+    public async Task OpenReturnSale()
+    {
+        var response = await DialogService.OpenAsync<ReturnSale>("Return Sale");
+
+        if (response != null)
+        {
+            await ResetScreen();
+
+            returnMode = true;
+
+            selectedCustomer = customers.First();
+
+            AddToCart("P01", -2);
+            AddToCart("P02", -1);
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    [JSInvokable("SelectPrevious")]
+    public void SelectPrevious()
+    {
+        if(selectedIndex == 0)
+            return;
+
+        selectedIndex--;
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable("SelectNext")]
+    public void SelectNext()
+    {
+        if (selectedIndex == cartItems.Count - 1)
+            return;
+
+        selectedIndex++;
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable("RemoveItem")]
+    public void RemoveItem()
+    {
+        cartItems.Remove(cartItems.ElementAt(selectedIndex));
+
+        if (selectedIndex != 0)
+            selectedIndex--;
+
+        Calculate();
+        InvokeAsync(StateHasChanged);
     }
 }
