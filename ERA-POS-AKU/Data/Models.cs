@@ -3,6 +3,7 @@ namespace ERA_POS_AKU.Data;
 public class Product
 {
     public string Barcode { get; set; }
+    public List<string> AlternateBarcodes { get; set; } = new List<string>();
     public string Name { get; set; }
     public string Description { get; set; }
     public double Price { get; set; }
@@ -31,6 +32,7 @@ public class Customer
     public string Name { get; set; }
     public string Identity { get; set; }
     public CustomerType Type { get; set; }
+    public double Balance { get; set; }
 }
 
 public enum CustomerType

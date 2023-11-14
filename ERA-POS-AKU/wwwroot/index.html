@@ -29,37 +29,36 @@
     <script>
         function registerShortcuts() {
             document.addEventListener('keydown', handleKeyDown);
-            focusBarcodeInput();
+            focusTxtBarcode();
         }
 
         function handleKeyDown(e) {
             switch (e.key) {
                 case 'F1':
                     if (document.getElementById('btnPayment') != null)
-                        togglePayment();
+                        GLOBAL.DotNetReference.invokeMethodAsync('TogglePaymentPanel');
                     else
-                        checkout();
+                        GLOBAL.DotNetReference.invokeMethodAsync('Checkout');
                     break;
                 case 'F2':
                     if (document.getElementById('btnPayment') != null)
-                        focusBarcodeInput();
+                        focusTxtBarcode();
                     else
-                        addCashless();
+                        GLOBAL.DotNetReference.invokeMethodAsync('AddCashless');
                     break;
                 case 'F3':
                     e.preventDefault();
                     if (document.getElementById('drpCustomer') != null)
-                        focusCardInput();
+                        document.getElementById('cardInput').focus();
                     else
-                        addPrepay();
+                        GLOBAL.DotNetReference.invokeMethodAsync('AddPrepay');
                     break;
                 case 'F4':
-                    e.preventDefault();
-                    addCash();
+                    GLOBAL.DotNetReference.invokeMethodAsync('AddCash');
                     break;
                 case 'F5':
                     e.preventDefault();
-                    addCard();
+                    GLOBAL.DotNetReference.invokeMethodAsync('AddCard');
                     break;
                 case 'F6':
                     e.preventDefault();
@@ -72,41 +71,13 @@
             }
         }
 
-        function focusCardInput() {
-            document.getElementById('cardInput').focus();
-        }
-
-        function focusBarcodeInput() {
+        function focusTxtBarcode() {
             document.getElementById('barcodeInput').focus();
         }
 
-        function focusAmountInput() {
+        function focusTxtAmount() {
             var txtAmount = document.getElementById('txtAmount').firstElementChild; 
             txtAmount.focus();
-        }
-
-        function addCashless() {
-            GLOBAL.DotNetReference.invokeMethodAsync('AddCashless');
-        }
-
-        function addPrepay() {
-            GLOBAL.DotNetReference.invokeMethodAsync('AddPrepay');
-        }
-
-        function addCash() {
-            GLOBAL.DotNetReference.invokeMethodAsync('AddCash');
-        }
-
-        function addCard() {
-            GLOBAL.DotNetReference.invokeMethodAsync('AddCard');
-        }
-
-        function checkout() {
-            GLOBAL.DotNetReference.invokeMethodAsync('Checkout');
-        }
-
-        function togglePayment() {
-            GLOBAL.DotNetReference.invokeMethodAsync('TogglePaymentPanel');
         }
 
         var GLOBAL = {};

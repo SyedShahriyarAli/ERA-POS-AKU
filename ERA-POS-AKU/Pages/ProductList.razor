@@ -13,10 +13,14 @@
                         ShowPagingSummary="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowColumnResize="true">
             <Columns>
                 <RadzenDataGridColumn TItem="Product" Property="Barcode" Title="Code"></RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Product" Property="AlternateBarcode" Title="Alternate Codes">
+                    <Template Context="data">
+                        @string.Join(", ", data.AlternateBarcodes)
+                    </Template>
+                </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Product" Property="Name" Title="Name"></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Product" Property="Price" Title="Price" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Product" Property="Tax" Title="Tax %" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Product" Property="Stock" Title="Stock" TextAlign="TextAlign.Center"></RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="Product" Width="70px" TextAlign="TextAlign.Center" Sortable="false" Filterable="false">
                     <Template Context="data">
                         <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Shade="Shade.Light" Variant="Variant.Flat" Click="@(args => AddToCart(data.Barcode))" />
