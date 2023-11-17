@@ -4,6 +4,7 @@ public class Product
 {
     public string Barcode { get; set; }
     public List<string> AlternateBarcodes { get; set; } = new List<string>();
+    public string AlternateBarcode { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public double Price { get; set; }

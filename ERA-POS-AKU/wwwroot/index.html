@@ -33,61 +33,65 @@
         }
 
         function handleKeyDown(e) {
-            switch (e.key) {
-                case 'F1':
-                    if (document.getElementById('btnPayment') != null)
-                        GLOBAL.DotNetReference.invokeMethodAsync('TogglePaymentPanel');
-                    else
-                        GLOBAL.DotNetReference.invokeMethodAsync('Checkout');
-                    break;
-                case 'F2':
-                    if (document.getElementById('btnPayment') != null) {
-                        if (document.getElementsByClassName('selected')[0]) {
-                            document.getElementsByClassName('selected')[0].childNodes[2].childNodes[9].childNodes[2].childNodes[9].childNodes[2].childNodes[2].focus();
-                            document.getElementsByClassName('selected')[0].childNodes[2].childNodes[9].childNodes[2].childNodes[9].childNodes[2].childNodes[2].select();
+            if (e.ctrlKey && e.key == 'f') {
+                e.preventDefault();
+                GLOBAL.DotNetReference.invokeMethodAsync('ViewProducts');
+            } else
+                switch (e.key) {
+                    case 'F1':
+                        if (document.getElementById('btnPayment') != null)
+                            GLOBAL.DotNetReference.invokeMethodAsync('TogglePaymentPanel');
+                        else
+                            GLOBAL.DotNetReference.invokeMethodAsync('Checkout');
+                        break;
+                    case 'F2':
+                        if (document.getElementById('btnPayment') != null) {
+                            if (document.getElementsByClassName('selected')[0]) {
+                                document.getElementsByClassName('selected')[0].childNodes[2].childNodes[9].childNodes[2].childNodes[9].childNodes[2].childNodes[2].focus();
+                                document.getElementsByClassName('selected')[0].childNodes[2].childNodes[9].childNodes[2].childNodes[9].childNodes[2].childNodes[2].select();
+                            }
                         }
-                    }
-                    else
-                        GLOBAL.DotNetReference.invokeMethodAsync('AddCashless');
-                    break;
-                case 'F3':
-                    e.preventDefault();
-                    if (document.getElementById('drpCustomer') != null)
-                        GLOBAL.DotNetReference.invokeMethodAsync('RemoveItem');
-                    else
-                        GLOBAL.DotNetReference.invokeMethodAsync('AddPrepay');
-                    break;
-                case 'F4':
-                    if (document.getElementById('btnPayment') != null)
-                        focusTxtBarcode();
-                    else
-                        GLOBAL.DotNetReference.invokeMethodAsync('AddCash');
-                    break;
-                case 'F5':
-                    e.preventDefault();
-                    if (document.getElementById('btnPayment') != null)
-                        document.getElementById('cardInput').focus();
-                    else
-                        GLOBAL.DotNetReference.invokeMethodAsync('AddCard');
-                    break;
-                case 'F6':
-                    e.preventDefault();
-                    GLOBAL.DotNetReference.invokeMethodAsync('VoidSale');
-                    break;
-                case 'F7':
-                    e.preventDefault();
-                    GLOBAL.DotNetReference.invokeMethodAsync('ParkSale');
-                    break;
-                case 'F8':
-                    GLOBAL.DotNetReference.invokeMethodAsync('OpenReturnSale');
-                    break;
-                case 'ArrowDown':
-                    GLOBAL.DotNetReference.invokeMethodAsync('SelectNext');
-                    break;
-                case 'ArrowUp':
-                    GLOBAL.DotNetReference.invokeMethodAsync('SelectPrevious');
-                    break;
-            }
+                        else
+                            GLOBAL.DotNetReference.invokeMethodAsync('AddCashless');
+                        break;
+                    case 'F3':
+                        e.preventDefault();
+                        if (document.getElementById('drpCustomer') != null)
+                            GLOBAL.DotNetReference.invokeMethodAsync('RemoveItem');
+                        else
+                            GLOBAL.DotNetReference.invokeMethodAsync('AddPrepay');
+                        break;
+                    case 'F4':
+                        if (document.getElementById('btnPayment') != null)
+                            focusTxtBarcode();
+                        else
+                            GLOBAL.DotNetReference.invokeMethodAsync('AddCash');
+                        break;
+                    case 'F5':
+                        e.preventDefault();
+                        if (document.getElementById('btnPayment') != null)
+                            document.getElementById('cardInput').focus();
+                        else
+                            GLOBAL.DotNetReference.invokeMethodAsync('AddCard');
+                        break;
+                    case 'F6':
+                        e.preventDefault();
+                        GLOBAL.DotNetReference.invokeMethodAsync('VoidSale');
+                        break;
+                    case 'F7':
+                        e.preventDefault();
+                        GLOBAL.DotNetReference.invokeMethodAsync('ParkSale');
+                        break;
+                    case 'F8':
+                        GLOBAL.DotNetReference.invokeMethodAsync('OpenReturnSale');
+                        break;
+                    case 'ArrowDown':
+                        GLOBAL.DotNetReference.invokeMethodAsync('SelectNext');
+                        break;
+                    case 'ArrowUp':
+                        GLOBAL.DotNetReference.invokeMethodAsync('SelectPrevious');
+                        break;
+                }
         }
 
         function focusTxtBarcode() {

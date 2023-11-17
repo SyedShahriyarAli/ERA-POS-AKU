@@ -6,7 +6,7 @@ public class GlobalService
     {
         List<Product> foodItems = new List<Product>
         {
-            new Product { Barcode = "P01", Name = "Banana", Description = "Fresh and ripe banana", Price = 55.0, Tax = 13, Stock = 100, Subsidized = false, SubsidizedPrice = 0, AlternateBarcodes = new List<string>(){ "P001", "P0001" } },
+            new Product { Barcode = "P01", Name = "Banana", Description = "Fresh and ripe banana", Price = 55.0, Tax = 13, Stock = 100, Subsidized = false, SubsidizedPrice = 0, AlternateBarcodes = new List<string>(){ "P001", "P0001" }, AlternateBarcode="P001, P0001" },
             new Product { Barcode = "P02", Name = "Apple", Description = "Crisp and juicy apple", Price = 60.0, Tax = 13, Stock = 100, Subsidized = true, SubsidizedPrice = 50 },
             new Product { Barcode = "P03", Name = "Chk.Wngs", Description = "Lean and protein-rich", Price = 200.0, Tax = 13, Stock = 100, Subsidized = false, SubsidizedPrice = 0 },
             new Product { Barcode = "P04", Name = "Salmn.Fillet", Description = "Premium quality salmon", Price = 300.0, Tax = 13, Stock = 100, Subsidized = true, SubsidizedPrice = 250 },
